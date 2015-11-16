@@ -1,0 +1,15 @@
+[Unit]
+Description=box
+BindsTo=broker@%i.service
+
+[Service]
+ExecStartPre=-/usr/bin/docker kill box-%i
+ExecStartPre=-/usr/bin/docker rm box-%i
+ExecStart=/usr/bin/docker run --rm --name box-%i -P  nherbaut/dvd2c-box
+ExecStop=/usr/bin/docker stop box-%i
+
+[X-Fleet]
+MachineOf=broker@%i.service
+
+
+

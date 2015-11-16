@@ -1,0 +1,14 @@
+[Unit]
+Description=frontend
+After=docker.service
+Requires=docker.service
+
+[Service]
+ExecStartPre=-/usr/bin/docker kill frontend-%i
+ExecStartPre=-/usr/bin/docker rm frontend-%i
+ExecStart=/usr/bin/docker run --rm --name frontend-%i -e FRONTEND_LISTEN=127.0.0.1:8080 -p 8080:8080 nherbaut/frontend
+ExecStop=/usr/bin/docker stop frontend-%i
+
+[X-Fleet]
+Conflicts=frontend@*.service
+
