@@ -1,6 +1,1 @@
-# RE 216 Network Programming #
-
-Merci de consulter le wiki pour plus d'info:
-
-https://bitbucket.org/re216/re216
-# 2015-s9
+projet s9/2015 sur l'orchestration des containers en production
