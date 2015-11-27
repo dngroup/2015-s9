@@ -1,7 +1,5 @@
 [Unit]
 Description=broker
-After=docker.service
-Requires=docker.service
 
 
 [Service]
