@@ -3,6 +3,7 @@ Description=broker
 
 
 [Service]
+TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill broker-%i
 ExecStartPre=-/usr/bin/docker rm broker-%i
 ExecStartPre=/usr/bin/docker pull rabbitmq:3.5.3

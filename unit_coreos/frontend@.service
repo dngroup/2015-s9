@@ -4,6 +4,7 @@ After=box@.service
 Requires=box@.service
 
 [Service]
+TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill frontend-%i
 ExecStartPre=-/usr/bin/docker rm frontend-%i
 ExecStart=/usr/bin/docker run --name frontend-%i -p 8080:8080 -e BOX_PORT_8081_TCP_ADDR=`etcdctl get /services/s9/box/host` -e BOX_PORT_8081_TCP_PORT=`etcdctl get /services/s9/box/port` nherbaut/frontend

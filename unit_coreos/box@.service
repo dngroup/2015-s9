@@ -4,6 +4,7 @@ After=broker@.service
 Requires=broker@.service
 
 [Service]
+TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill box-%i
 ExecStartPre=-/usr/bin/docker rm box-%i
 ExecStartPre=/usr/bin/etcdctl set /services/s9/box/host ${COREOS_PRIVATE_IPV4}
