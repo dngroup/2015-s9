@@ -7,7 +7,7 @@ BindsTo=broker@.service
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill worker-%i
 ExecStartPre=-/usr/bin/docker rm worker-%i
-ExecStart=/usr/bin/docker run --name worker-%i -e AMQP_PORT_5672_TCP_ADDR=`etcdctl get /services/s9/broker/host`  nherbaut/worker:jdev
+ExecStart=/usr/bin/docker run --name worker-%i -e AMQP_PORT_5672_TCP_ADDR=`etcdctl get broker_host`  nherbaut/worker:jdev
 ExecStop=/usr/bin/docker stop worker-%i
 
 [X-Fleet]
