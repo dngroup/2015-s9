@@ -7,7 +7,7 @@ Requires=box@.service
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill frontend-%i
 ExecStartPre=-/usr/bin/docker rm frontend-%i
-ExecStart=/usr/bin/docker run --name frontend-%i -p 8080:8080 -e BOX_PORT_8081_TCP_ADDR=`etcdctl get box_host` -e BOX_PORT_8081_TCP_PORT=`etcdctl get box_port` nherbaut/frontend
+ExecStart=/usr/bin/docker run --rm --name frontend-%i -p 8080:8080 -e BOX_PORT_8081_TCP_ADDR=`etcdctl get box_host` -e BOX_PORT_8081_TCP_PORT=`etcdctl get box_port` nherbaut/frontend
 ExecStop=/usr/bin/docker stop frontend-%i
 
 [X-Fleet]
