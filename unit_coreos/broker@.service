@@ -1,15 +1,30 @@
 [Unit]
 Description=broker
-
-
+After=docker.service
+Requires=docker.service
+ 
 [Service]
+Type=simple
+EnvironmentFile=/etc/environment
+ 
 TimeoutStartSec=0
-ExecStartPre=-/usr/bin/docker kill broker-%i
-ExecStartPre=-/usr/bin/docker rm broker-%i
-ExecStartPre=/usr/bin/etcdctl set broker_host ${COREOS_PRIVATE_IPV4}
-ExecStartPre=/usr/bin/etcdctl set broker_port 5672
-ExecStart=/usr/bin/docker run --rm --name broker-%i -p 5672:5672 rabbitmq:3.5.3
-ExecStop=/usr/bin/docker stop broker-%i
+ExecStartPre=-/usr/bin/docker kill broker
+ExecStartPre=-/usr/bin/docker rm broker
+ExecStartPre=/usr/bin/docker pull rabbitmq:3.4.3
+ExecStartPre=/usr/bin/etcdctl set /services/viotech/broker/host 192.168.2.103
+ExecStart=/usr/bin/docker run --name broker -p 5672:5672 rabbitmq:3.4.3
+ExecStop=/usr/bin/docker stop broker
+ 
+ 
+[Install]
+WantedBy=multi-user.target
 
-[X-Fleet]
-Conflicts=broker@*.service
+
+
+
+
+
+
+
+
+
