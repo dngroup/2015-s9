@@ -1,0 +1,24 @@
+[Unit]
+Description=frontend
+After=docker.service
+Requires=docker.service,broker.service
+
+[Service]
+EnvironmentFile=/etc/environment
+Type=simple
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill frontend
+ExecStartPre=-/usr/bin/docker rm frontend
+ExecStartPre=/usr/bin/docker pull nherbaut/frontend
+ExecStart=/bin/bash -c ' /usr/bin/docker run --name frontend -p 8080:8080 \
+ -e AMQP_PORT_5672_TCP_ADDR=`etcdctl get broker_host`\
+ -e AMQP_PORT_5672_TCP_PORT=`etcdctl get broker_port`\
+ -e BOX_PORT_8081_TCP_ADDR=`etcdctl get box_host`\
+ -e BOX_PORT_8081_TCP_PORT=`etcdctl get box_port`\
+ nherbaut/frontend'
+
+ExecStop=/usr/bin/docker stop frontend
+
+
+[Install]
+WantedBy=multi-user.target

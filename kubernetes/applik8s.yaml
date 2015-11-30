@@ -27,12 +27,6 @@ spec:
   # this replicas value is default
   # modify it according to your case
   replicas: 1
-  # selector can be applied automatically
-  # from the labels in the pod template if not set
-  # selector:
-  #   app: guestbook
-  #   role: master
-  #   tier: backend
   template:
     metadata:
       labels:
@@ -53,10 +47,13 @@ metadata:
     app: box
     tier: backend
 spec:
+  type: NodePort
   ports:
     # the port that this service should serve on
   - port: 8081
+    containerPort: 8081
     targetPort: 8081
+    nodePort: 31333
   selector:
     app: box
     tier: backend
@@ -74,12 +71,6 @@ spec:
   # this replicas value is default
   # modify it according to your case
   replicas: 1
-  # selector can be applied automatically
-  # from the labels in the pod template if not set
-  # selector:
-  #   app: guestbook
-  #   role: slave
-  #   tier: backend
   template:
     metadata:
       labels:
@@ -115,6 +106,7 @@ spec:
     # the port that this service should serve on
   - port: 8080
     targetPort: 8080
+    nodePort: 31332
   selector:
     app: mediahome
     tier: frontend
@@ -132,11 +124,7 @@ spec:
   # this replicas value is default
   # modify it according to your case
   replicas: 1
-  # selector can be applied automatically
-  # from the labels in the pod template if not set
-  # selector:
-  #   app: guestbook
-  #   tier: frontend
+
   template:
     metadata:
       labels:
@@ -146,18 +134,11 @@ spec:
       containers:
       - name: frontend
         image: nherbaut/frontend
-        resources:
-          requests:
-            cpu: 100m
-            memory: 100Mi
         env:
-        - name: box
-          value: dns
-          # If your cluster config does not include a dns service, then to
-          # instead access environment variables to find service host
-          # info, comment out the 'value: dns' line above, and uncomment the
-          # line below.
-          # value: env
+        - name: BOX_PORT_8081_TCP_ADDR
+          value: 172.17.8.103
+        - name: BOX_PORT_8081_TCP_PORT
+          value: '31333'
         ports:
         - containerPort: 8080
 ---
@@ -192,11 +173,6 @@ spec:
   # this replicas value is default
   # modify it according to your case
   replicas: 3
-  # selector can be applied automatically
-  # from the labels in the pod template if not set
-  # selector:
-  #   app: guestbook
-  #   tier: frontend
   template:
     metadata:
       labels:
@@ -249,11 +225,7 @@ spec:
   # this replicas value is default
   # modify it according to your case
   replicas: 1
-  # selector can be applied automatically
-  # from the labels in the pod template if not set
-  # selector:
-  #   app: guestbook
-  #   tier: frontend
+
   template:
     metadata:
       labels:

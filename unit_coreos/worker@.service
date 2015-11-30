@@ -1,7 +1,6 @@
 [Unit]
 Description=Worker
-Requires=broker@.service
-BindsTo=broker@.service
+Requires=broker.service
 
 [Service]
 TimeoutStartSec=0

@@ -1,0 +1,17 @@
+[Unit]
+Description=box
+
+
+
+[Service]
+Type=Simple
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill box
+ExecStartPre=-/usr/bin/docker rm box
+ExecStartPre=/usr/bin/etcdctl set box_host ${COREOS_PRIVATE_IPV4}
+ExecStartPre=/usr/bin/etcdctl set box_port 8081
+ExecStart=/usr/bin/docker run --rm --name box -p 8081:8081 -e AMQP_PORT_5672_TCP_ADDR=`etcdctl get broker_host` -e AMQP_PORT_5672_TCP_PORT=`etcdctl get broker_port` nherbaut/dvd2c-box
+ExecStop=/usr/bin/docker stop box
+
+[Install]
+WantedBy=multi-user.target
