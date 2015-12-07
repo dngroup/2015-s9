@@ -1,0 +1,46 @@
+#Frontend
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app: mediahome
+    tier: frontend
+    del: appli
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 31332
+  selector:
+    app: mediahome
+    tier: frontend
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: frontend
+  labels:
+    app: mediahome
+    tier: frontend
+    del: appli
+spec:
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        app: mediahome
+        tier: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: nherbaut/frontend
+        env:
+        - name: BOX_PORT_8081_TCP_ADDR
+          value: 172.17.8.103
+        - name: BOX_PORT_8081_TCP_PORT
+          value: '31333'
+        ports:
+        - containerPort: 8080

@@ -1,0 +1,44 @@
+#Broker
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-mng
+  labels:
+    app: rabbitmq-mng
+    tier: amqp
+    del: appli
+spec:
+  type: NodePort
+  ports:
+  - name: management
+    port: 15672
+    targetPort: 15672
+    nodePort: 30672
+  selector:
+    app: rabbitmq-mng
+    tier: amqp
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: amqp-mng
+  labels:
+    app: rabbitmq-mng
+    tier: amqp
+    del: appli
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rabbitmq-mng
+        tier: amqp
+    spec:
+      containers:
+      - name: amqp-management
+        image: rabbitmq:3.5.3-management
+        env:
+        - name: amqp
+          value: dns
+        ports:
+        - containerPort: 15672

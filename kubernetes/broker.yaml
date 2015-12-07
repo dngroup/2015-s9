@@ -1,0 +1,39 @@
+#Broker
+apiVersion: v1
+kind: Service
+metadata:
+  name: amqp
+  labels:
+    app: rabbitmq
+    tier: amqp
+    del: appli
+spec:
+  ports:
+  - name: rabbitmq
+    port: 5672
+    targetPort: 5672
+  selector:
+    app: rabbitmq
+    tier: amqp
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: amqp
+  labels:
+    app: rabbitmq
+    tier: amqp
+    del: appli
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+        tier: amqp
+    spec:
+      containers:
+      - name: amqp
+        image: rabbitmq:3.5.3
+        ports:
+        - containerPort: 5672

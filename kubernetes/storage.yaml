@@ -1,0 +1,42 @@
+#Storage
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage
+  labels:
+    app: storage
+    tier: storage
+    del: appli
+spec:
+  ports:
+  - port: 8082
+    targetPort: 8082
+  selector:
+    app: storage
+    tier: storage
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: storage
+  labels:
+    app: storage
+    tier: storage
+    del: appli
+spec:
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        app: storage
+        tier: storage
+    spec:
+      containers:
+      - name: storage
+        image: nherbaut/dummy-storage
+        env:
+        - name: box
+          value: dns
+        ports:
+        - containerPort: 8082

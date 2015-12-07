@@ -1,0 +1,203 @@
+#Broker
+apiVersion: v1
+kind: Service
+metadata:
+  name: amqp
+  labels:
+    app: rabbitmq
+    tier: amqp
+spec:
+  ports:
+  - port: 5672
+    targetPort: 5672
+  selector:
+    app: rabbitmq
+    tier: amqp
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: amqp
+  labels:
+    app: rabbitmq
+    tier: amqp
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+        tier: amqp
+    spec:
+      containers:
+      - name: amqp
+        image: rabbitmq:3.5.3
+        ports:
+        - containerPort: 5672
+
+---
+#Backend
+apiVersion: v1
+kind: Service
+metadata:
+  name: box
+  labels:
+    app: box
+    tier: backend
+spec:
+  type: NodePort
+  ports:
+  - port: 8081
+    targetPort: 8081
+    nodePort: 31333
+  selector:
+    app: box
+    tier: backend
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: box
+  labels:
+    app: box
+    tier: backend
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: box
+        tier: backend
+    spec:
+      containers:
+      - name: box
+        image: nherbaut/dvd2c-box
+        env:
+        - name: amqp
+          value: dns
+        ports:
+        - containerPort: 8081
+---
+#Frontend
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app: mediahome
+    tier: frontend
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    targetPort: 8080
+    nodePort: 31332
+  selector:
+    app: mediahome
+    tier: frontend
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: frontend
+  labels:
+    app: mediahome
+    tier: frontend
+spec:
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        app: mediahome
+        tier: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: nherbaut/frontend
+        env:
+        - name: BOX_PORT_8081_TCP_ADDR
+          value: 172.17.8.103
+        - name: BOX_PORT_8081_TCP_PORT
+          value: '31333'
+        ports:
+        - containerPort: 8080
+---
+#Worker
+apiVersion: v1
+kind: Service
+metadata:
+  name: worker
+  labels:
+    app: worker
+    tier: worker
+spec:
+  selector:
+    app: worker
+    tier: worker
+  ports:
+    - port: 5672
+      targetPort: 5672
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: worker
+  labels:
+    app: worker
+    tier: worker
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: worker
+        tier: worker
+    spec:
+      containers:
+      - name: worker
+        image: nherbaut/worker:jdev
+        env:
+        - name: amqp
+          value: dns
+---
+#Storage
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage
+  labels:
+    app: storage
+    tier: storage
+spec:
+  ports:
+  - port: 8082
+    targetPort: 8082
+  selector:
+    app: storage
+    tier: storage
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: storage
+  labels:
+    app: storage
+    tier: storage
+spec:
+  replicas: 1
+
+  template:
+    metadata:
+      labels:
+        app: storage
+        tier: storage
+    spec:
+      containers:
+      - name: storage
+        image: nherbaut/dummy-storage
+        env:
+        - name: box
+          value: dns
+        ports:
+        - containerPort: 8082

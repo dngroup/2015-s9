@@ -1,0 +1,43 @@
+#Backend
+apiVersion: v1
+kind: Service
+metadata:
+  name: box
+  labels:
+    app: box
+    tier: backend
+    del: appli
+spec:
+  type: NodePort
+  ports:
+  - port: 8081
+    targetPort: 8081
+    nodePort: 31333
+  selector:
+    app: box
+    tier: backend
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: box
+  labels:
+    app: box
+    tier: backend
+    del: appli
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: box
+        tier: backend
+    spec:
+      containers:
+      - name: box
+        image: nherbaut/dvd2c-box
+        env:
+        - name: amqp
+          value: dns
+        ports:
+        - containerPort: 8081

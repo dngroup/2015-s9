@@ -1,0 +1,44 @@
+#Broker
+apiVersion: v1
+kind: Service
+metadata:
+  name: flower
+  labels:
+    app: flower
+    tier: amqp
+    del: appli
+spec:
+  type: NodePort
+  ports:
+  - name: flower
+    port: 5555
+    targetPort: 5555
+    nodePort: 30555
+  selector:
+    app: flower
+    tier: amqp
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: flower
+  labels:
+    app: flower
+    tier: amqp
+    del: appli
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: flower
+        tier: amqp
+    spec:
+      containers:
+      - name: flower
+        image: iserko/docker-celery-flower
+        env:
+        - name: CELERY_BROKER_URL
+          value: "amqp://guest:guest@$(AMQP_PORT_5672_TCP_ADDR):5672"
+        ports:
+        - containerPort: 5555
