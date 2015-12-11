@@ -1,7 +1,7 @@
 [Unit]
 Description=Worker
-After=docker.service
-Requires=docker.service,broker.service
+After=flanneld.service
+Requires=flanneld.service
 
 
 
@@ -14,3 +14,4 @@ ExecStartPre=-/usr/bin/docker rm worker%i
 ExecStartPre=/usr/bin/docker pull nherbaut/worker:jdev
 ExecStart=/bin/bash -c '/usr/bin/docker run --name worker%i -e AMQP_PORT_5672_TCP_ADDR=`etcdctl get broker/host` -e AMQP_PORT_5672_TCP_PORT=`etcdctl get broker/port`    nherbaut/worker:jdev'
 ExecStop=/usr/bin/docker stop worker%i
+Restart=always

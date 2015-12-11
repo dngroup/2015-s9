@@ -35,7 +35,7 @@ spec:
     spec:
       containers:
       - name: box
-        image: nherbaut/dvd2c-box
+        image: nherbaut/dvd2c-box	
         env:
         - name: amqp
           value: dns

@@ -1,7 +1,7 @@
 [Unit]
 Description=frontend
-After=docker.service
-Requires=docker.service,broker.service,box.service
+After=flanneld.service
+Requires=flanneld.service,broker.service,box.service
 
 [Service]
 EnvironmentFile=/etc/environment
@@ -17,3 +17,4 @@ ExecStart=/bin/bash -c 'usr/bin/docker run --name frontend -p 8080:8080 -e AMQP_
  -e AMQP_PORT_5672_TCP_PORT=`etcdctl get broker/port` -e BOX_PORT_8081_TCP_ADDR=`etcdctl get box/host` -e BOX_PORT_8081_TCP_PORT=`etcdctl get box/port` nherbaut/frontend'
 
 ExecStop=/usr/bin/docker stop frontend
+Restart=always

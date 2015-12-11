@@ -1,7 +1,7 @@
 [Unit]
 Description=Flower
-After=docker.service
-Requires=docker.service,broker.service
+After=flanneld.service
+Requires=flanneld.service,broker.service
 
 [Service]
 Type=simple
@@ -12,3 +12,4 @@ ExecStartPre=-/usr/bin/docker rm flower
 ExecStartPre=/usr/bin/docker pull iserko/docker-celery-flower
 ExecStart=/bin/bash -c '/usr/bin/docker run --name flower -p 5555:5555 -e CELERY_BROKER_URL="amqp://guest:guest@$(etcdctl get broker/host):5672"  iserko/docker-celery-flower '
 ExecStop=/usr/bin/docker stop flower
+Restart=always

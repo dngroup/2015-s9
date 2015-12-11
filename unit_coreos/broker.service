@@ -1,7 +1,7 @@
 [Unit]
 Description=broker
-After=docker.service
-Requires=docker.service
+After=flanneld.service
+Requires=flanneld.service
 
 [Service]
 EnvironmentFile=/etc/environment
@@ -15,3 +15,5 @@ ExecStartPre=/usr/bin/etcdctl set broker/host ${COREOS_PRIVATE_IPV4}
 ExecStartPre=/usr/bin/etcdctl set broker/port 5672
 ExecStart=/usr/bin/docker run --name broker -p 5672:5672 rabbitmq:3.4.3
 ExecStop=/usr/bin/docker stop broker
+
+Restart=always
