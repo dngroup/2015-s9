@@ -1,6 +1,6 @@
 [Unit]
 Description=Flower
-After=docker.service,flanneld.service
+After=docker.service,flanneld.service,broker.service
 Requires=docker.service,flanneld.service,broker.service
 
 [Service]

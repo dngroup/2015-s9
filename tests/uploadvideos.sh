@@ -6,7 +6,7 @@ then
 	sudo apt-get install curl
 fi
 
-addr='172.17.8.102:31333'
+addr='172.17.8.102:8081'
 video='/home/mlacaud/Vidéos/1.mp4'
 
 if [ $# -ne 1 ]

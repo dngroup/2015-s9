@@ -1,20 +1,15 @@
 [Unit]
 Description=frontend
-After=docker.service,flanneld.service
+After=docker.service,flanneld.service,box.service
 Requires=docker.service,flanneld.service,box.service
 
 [Service]
 EnvironmentFile=/etc/environment
 Type=simple
-
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill frontend
 ExecStartPre=-/usr/bin/docker rm frontend
 ExecStartPre=/usr/bin/docker pull nherbaut/frontend
-ExecStartPre=/usr/bin/etcdctl set frontend/port 8080
-ExecStartPre=/usr/bin/etcdctl set frontend/host ${COREOS_PRIVATE_IPV4}
-ExecStart=/bin/bash -c 'usr/bin/docker run --name frontend -p 8080:8080 -e AMQP_PORT_5672_TCP_ADDR=`etcdctl get broker/host`\
- -e AMQP_PORT_5672_TCP_PORT=`etcdctl get broker/port` -e BOX_PORT_8081_TCP_ADDR=`etcdctl get box/host` -e BOX_PORT_8081_TCP_PORT=`etcdctl get box/port` nherbaut/frontend'
-
+ExecStart=/bin/bash -c 'usr/bin/docker run --name frontend -p 8080:8080 -e BOX_PORT_8081_TCP_ADDR=`etcdctl get box/host` -e BOX_PORT_8081_TCP_PORT=`etcdctl get box/port` nherbaut/frontend'
 ExecStop=/usr/bin/docker stop frontend
 Restart=always
