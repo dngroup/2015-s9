@@ -1,7 +1,7 @@
 [Unit]
 Description=Worker
-After=flanneld.service
-Requires=flanneld.service
+After=docker.service,flanneld.service
+Requires=docker.service,flanneld.service,broker.service
 
 
 

@@ -1,7 +1,7 @@
 [Unit]
 Description=box
-After=flanneld.service
-Requires=flanneld.service,broker.service
+After=docker.service,flanneld.service
+Requires=docker.service,flanneld.service,broker.service
 
 [Service]
 EnvironmentFile=/etc/environment
