@@ -37,18 +37,3 @@ spec:
         env:
         - name: amqp
           value: dns
----
-apiVersion: v1
-kind: HorizontalPodAutoscaler
-metadata:
-  name: worker
-  namespace: default
-spec:
-  maxReplicas: 4
-  minReplicas: 1
-  scaleRef:
-    kind: ReplicationController
-    name: worker
-    namespace: default
-  cpuUtilization:
-    targetPercentage: 30
