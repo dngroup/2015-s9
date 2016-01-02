@@ -1,0 +1,15 @@
+[Unit]
+Description=iperf tcp client
+After=docker.service
+Requires=docker.service
+
+[Service]
+EnvironmentFile=/etc/environment
+Type=simple
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill clientiperf
+ExecStartPre=-/usr/bin/docker rm clientiperf
+ExecStartPre=/usr/bin/docker pull mlacaud/iperf-client-tcp
+ExecStart=/bin/bash -c '/usr/bin/docker run --name clientiperf -e ADDR=`etcdctl get iperfserver` mlacaud/iperf-client-tcp'
+ExecStop=/usr/bin/docker stop clientiperf
+Restart=always

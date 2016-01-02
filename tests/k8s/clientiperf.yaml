@@ -1,0 +1,33 @@
+#IperfClient
+apiVersion: v1
+kind: Service
+metadata:
+  name: iperfclient
+  labels:
+    app: iperf
+    tier: client
+    del: appli
+spec:
+  selector:
+    app: iperf
+    tier: client
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: iperfclient
+  labels:
+    app: iperf
+    tier: client
+    del: appli
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: iperf
+        tier: client
+    spec:
+      containers:
+      - name: iperfclient
+        image: mlacaud/iperf-client-tcp

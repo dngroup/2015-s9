@@ -1,0 +1,16 @@
+[Unit]
+Description=iperf tcp server
+After=docker.service
+Requires=docker.service
+
+[Service]
+EnvironmentFile=/etc/environment
+Type=simple
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill serveriperf
+ExecStartPre=-/usr/bin/docker rm serveriperf
+ExecStartPre=/usr/bin/etcdctl set iperfserver ${COREOS_PRIVATE_IPV4}
+ExecStartPre=/usr/bin/docker pull mlacaud/iperf-server-tcp
+ExecStart=/bin/bash -c '/usr/bin/docker run --name serveriperf -p 5001:5001 mlacaud/iperf-server-tcp'
+ExecStop=/usr/bin/docker stop serveriperf
+Restart=always

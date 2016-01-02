@@ -1,0 +1,39 @@
+#Iperfserver
+apiVersion: v1
+kind: Service
+metadata:
+  name: iperfserver
+  labels:
+    app: iperf
+    tier: server
+    del: appli
+spec:
+  ports:
+  - name: iperfserver
+    port: 5001
+    targetPort: 5001
+  selector:
+    app: iperf
+    tier: server
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: iperfserver
+  labels:
+    app: iperf
+    tier: server
+    del: appli
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: iperf
+        tier: server
+    spec:
+      containers:
+      - name: iperfserver
+        image: mlacaud/iperf-server-tcp
+        ports:
+        - containerPort: 5001
