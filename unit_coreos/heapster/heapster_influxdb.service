@@ -2,7 +2,6 @@
 Description=influxdb
 
 After=docker.service
-Requires=docker_configs.mount
 
 [Service]
 TimeoutStartSec=0
