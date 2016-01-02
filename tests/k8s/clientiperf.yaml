@@ -31,3 +31,6 @@ spec:
       containers:
       - name: iperfclient
         image: mlacaud/iperf-client-tcp
+          env:
+          - name: ADDR
+            value: "172.17.8.102"
