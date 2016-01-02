@@ -15,3 +15,6 @@ ExecStartPre=/usr/bin/docker pull nherbaut/worker:jdev
 ExecStart=/bin/bash -c '/usr/bin/docker run --name worker%i -e AMQP_PORT_5672_TCP_ADDR=`etcdctl get broker/host` -e AMQP_PORT_5672_TCP_PORT=`etcdctl get broker/port` nherbaut/worker:jdev'
 ExecStop=/usr/bin/docker stop worker%i
 Restart=always
+
+[X-Fleet]
+Conflicts=worker@*.service
