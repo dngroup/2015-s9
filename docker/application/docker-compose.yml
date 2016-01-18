@@ -1,40 +1,38 @@
 ---
 box:
-  dns:
-    - "8.8.8.8"
   image: nherbaut/dvd2c-box
-  links:
-    - "broker:amqp"
-  name: box
+  environment:
+    - "AMQP_PORT_5672_TCP_ADDR=application_broker_1"
+    - "AMQP_PORT_5672_TCP_PORT=5672"
+    - "HOSTNAME=tweaking"
+  extra_hosts:
+    - "tweaking:0.0.0.0"  
   ports:
-    - "8081"
+    - "8081:8081"
+
 broker:
-  dns:
-    - "8.8.8.8"
-  expose:
-    - "5672"
-  ports:
+  expose: 
     - "5672"
   image: "rabbitmq:3.5.3"
+
 frontend:
-  dns:
-    - "8.8.8.8"
   image: nherbaut/frontend
-  links:
-    - "box:box"
+  environment:
+    - "BOX_PORT_8081_TCP_ADDR=application_box_1"
+    - "BOX_PORT_8081_TCP_ADDR=8081"
+    - "HOSTNAME=0.0.0.0"        
   ports:
-    - "8080"
+    - "8080:8080"
+
 worker:
-  dns:
-    - "8.8.8.8"
   image: nherbaut/worker:jdev
-  links:
-    - "broker:amqp"
-storage:
-  dns:
-    - "8.8.8.8"
-  image: nherbaut/dummy-storage
-  links:
-    - "box:box"
+  environment:
+    - "AMQP_PORT_5672_TCP_ADDR=application_broker_1"
+    - "AMQP_PORT_5672_TCP_PORT=5672"    
+
+flower:
+  image: iserko/docker-celery-flower
+  environment:
+    - "CELERY_BROKER_URL=amqp://guest:guest@application_broker_1:5672"
   ports:
-    - "8082"
+    - "5555:5555"
